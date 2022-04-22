@@ -1,8 +1,7 @@
 import React from "react";
 
-import logo from "@/";
-
-import "./index.scss";
+import logo from "@/assets/logo.png";
+import "@/pages/Login/index.scss";
 
 const Login = () => {
   return (
