@@ -1,16 +1,36 @@
 // createSlice: 用于创建状态切片
-import { createSlice } from "@reduxjs/toolkit";
+import { login } from "@/api/user";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+
+const initialState = {
+  token: localStorage.getItem("@#@Token") || "",
+  loading: false,
+  error: null,
+};
+
+export const userLogin = createAsyncThunk("user/userLogin", async (payload) => {
+  // 异步操作成功, 返回异步操作结果, 它将会被作为 fulfilled action 的 payload
+  // 异步操作失败, 抛出异常, 它将会作为 rejected action 的 error
+  console.log(payload);
+  try {
+    let { data } = await login(payload);
+    // console.log(data);
+    localStorage.setItem("@#@Token", data.token);
+    return data.token;
+  } catch (error) {
+    console.log("请求失败");
+  }
+});
 
 // actions: 对象类型, 用于存储 action creator 函数, 函数名字和 reducers 配置选项中 reducer 函数的名字相对应
-const { actions, reducer: TodoReducer } = createSlice({
+const { actions, reducer: userReducer } = createSlice({
   // createSlice 方法将会返回 action creator 函数, action creator 函数将要返回 action 对象
   // 按照约定, action 对象中的 type 属性值应该由两部分组成, 第一部分表示你要处理什么状态, 第二部分表示你要对该状态进行什么处理
   // 这样约定的目的是为了让代码看起来更加的清晰 {type: "todos/addTodo"}
   // name 属性配置的就是 action 对象中 type 属性值的一部分, 表示你要对什么状态进行处理
-  name: "todos",
-
+  name: "user",
   // initialState 配置的是当前状态切片中状态的初始值
-  initialState: ["state"],
+  initialState: initialState,
   // reducers 对象中配置的是对状态进行处理的 reducer 函数
   // 在原本的 reducer 函数中, 对状态进行的不同的处理是通过 switch case 语句匹配 action.type 属性实现的
   // ReduxToolkit 将原本的 switch case 抽象成了多个 reducer 函数, 每个 reducer 函数对应的就是原本 switch case 中的一种情况
@@ -29,4 +49,4 @@ const { actions, reducer: TodoReducer } = createSlice({
 // 导出 action creator 函数, 供组件使用
 export const { addTodo } = actions;
 // 导出 reducer 函数, 因为在后续的代码中还是要合并 reducer 函数
-export default TodoReducer;
+export default userReducer;

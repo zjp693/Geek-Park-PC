@@ -1,16 +1,27 @@
 import React from "react";
 
-import { Form, Input, Button, Checkbox } from "antd";
+import { Form, Input, Button, Checkbox, message } from "antd";
 import { UserOutlined, LockOutlined } from "@ant-design/icons";
-
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
 import logo from "@/assets/logo.png";
 import "@/pages/Login/index.scss";
-
-const onFinish = (values) => {
-  console.log(values);
-};
-
+import { userLogin } from "@/store/userSlice";
 const Login = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const onFinish = async (values) => {
+    console.log(values);
+    try {
+      await dispatch(userLogin(values));
+      message.success("登录成功");
+      navigate("/home", { replace: true });
+    } catch (error) {
+      console.log(error);
+      message.error(error.response?.data?.message || "登录失败");
+    }
+  };
   return (
     <>
       <div className="login">
@@ -22,7 +33,6 @@ const Login = () => {
             initialValues={{
               mobile: "13911111111",
               code: "246810",
-              isAgree: true,
             }}
             size="large"
             validateTrigger={["onChange", "onBlur"]}
@@ -55,19 +65,7 @@ const Login = () => {
                 placeholder="请输入验证码"
               ></Input>
             </Form.Item>
-            <Form.Item
-              name="isAgree"
-              valuePropName="checked"
-              rules={[
-                {
-                  validator: (_, value) => {
-                    if (value === true) return Promise.resolve();
-                    else
-                      return Promise.reject(new Error("请勾选我已阅读并同意"));
-                  },
-                },
-              ]}
-            >
+            <Form.Item valuePropName="checked">
               <Checkbox>我已阅读并同意「用户协议」和「隐私条款」</Checkbox>
             </Form.Item>
             <Form.Item>
