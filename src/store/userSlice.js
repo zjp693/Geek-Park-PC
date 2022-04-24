@@ -37,12 +37,30 @@ const { actions, reducer: userReducer } = createSlice({
   // 在 ReduxToolkit 中 reducer 函数的名字会作为 action 对象中 type 属性值的第二部分, 这样的话就形成了完整的 type 属性值了
   reducers: {
     // 添加任务
-    addTodo(state, action) {
+    removeToken(state) {
       // 在 ReduxToolkit 中的 reducer 函数里, 可以直接对状态进行处理, 不必拷贝新的状态再对其进行处理
       // 因为 ReduxToolkit 内部集成了不可变数据结构, 此处操作不会改变原有状态
       // 状态处理完成后也不必显式的在 reducer 函数中返回新的处理后的状态, 内部会帮助我们使用新状态替换旧状态
       // action.payload 是 ReduxToolkit 为 action 对象添加的属性, 属性值是调用 action creator 函数时传递的参数
-      state.push(action.payload);
+      state.token = "";
+      localStorage.removeItem("@#@Token");
+    },
+  },
+  extraReducers: {
+    [userLogin.pending](state) {
+      state.loading = true;
+      state.token = "";
+      state.error = null;
+    },
+    [userLogin.fulfilled](state, action) {
+      state.loading = false;
+      state.error = null;
+      state.token = action.payload;
+    },
+    [userLogin.rejected](state, action) {
+      state.loading = false;
+      state.token = "";
+      state.error = action.error;
     },
   },
 });
