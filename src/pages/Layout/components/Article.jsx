@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 
 import {
   Form,
@@ -22,7 +22,7 @@ const Article = () => {
     (state) => state.list
   );
   const res = artlist.results;
-  console.log(artlist);
+
   useEffect(() => {
     dispatch(loadList());
     dispatch(Articles());
@@ -98,26 +98,38 @@ const Article = () => {
   ];
   // 改变筛选条件查询
   const onFinish = (values) => {
+    params.current.status = values.status;
+    params.current.channel_id = values.channel_id;
     console.log(values);
-    const params = {};
-    params.status = values.status;
-    params.channel_id = values.channel_id;
     if (values.dateArr) {
-      params.begin_pubdate = values.dateArr[0].format("YYYY-MM-DD HH:mm:ss");
-      params.end_pubdate = values.dateArr[1].format("YYYY-MM-DD HH:mm:ss");
+      params.current.begin_pubdate = values.dateArr[0].format(
+        "YYYY-MM-DD HH:mm:ss"
+      );
+      params.current.end_pubdate = values.dateArr[1].format(
+        "YYYY-MM-DD HH:mm:ss"
+      );
     } else {
-      params.begin_pubdate = undefined;
-      params.end_pubdate = undefined;
+      params.current.begin_pubdate = undefined;
+      params.current.end_pubdate = undefined;
     }
-    dispatch(Articles(params));
+    params.current.page = 1;
+    dispatch(Articles(params.current));
   };
   // 改变分页和size重新查询
   const onPageChange = (page, pageSize) => {
-    const params = {};
-    params.page = page;
-    params.per_page = pageSize;
-    dispatch(Articles(params));
+    params.current.page = page;
+    params.current.per_page = pageSize;
+    dispatch(Articles(params.current));
   };
+  // 请求参数
+  const params = useRef({
+    page: 1,
+    per_page: 20,
+    channel_id: undefined,
+    status: undefined,
+    begin_pubdate: undefined,
+    end_pubdate: undefined,
+  });
   return (
     <div className={styles.root}>
       <Card
