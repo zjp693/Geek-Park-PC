@@ -12,13 +12,13 @@ const Login = () => {
   const navigate = useNavigate();
 
   const onFinish = async (values) => {
-    console.log(values);
+    // console.log(values);
     try {
       await dispatch(userLogin(values));
       message.success("登录成功");
       navigate("/home", { replace: true });
     } catch (error) {
-      console.log(error);
+      // console.log(error);
       message.error(error.response?.data?.message || "登录失败");
     }
   };

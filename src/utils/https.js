@@ -3,7 +3,6 @@ import axios from "axios";
 
 // 2. 创建 baseURL 用于存储基准地址
 const baseURL = "http://toutiao.itheima.net/v1_0/";
-console.log(1111);
 // 1. 创建一个 axios 实例对象，用于配置项目应用相关请求
 // const instanceWithToken = axios.create({ baseURL }); // 携带Token才可以查看的数据
 const _axios = axios.create({ baseURL }); // 无需携带 Token 就可以看到的数据
@@ -19,7 +18,7 @@ _axios.interceptors.request.use((config) => {
   const passUrl = ["/authorizations"];
   if (passUrl.includes(config.url)) return config;
   const token = localStorage.getItem("@#@Token");
-  console.log(token);
+  // console.log(token);
   // 判断受否携带了 Token
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;

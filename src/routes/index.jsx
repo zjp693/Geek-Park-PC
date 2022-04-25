@@ -2,9 +2,12 @@ import { useRoutes } from "react-router-dom";
 import Layout from "../pages/Layout/index";
 import Login from "../pages/Login/index";
 import Dashboard from "../pages/Layout/components/Dashboard";
+import Article from "../pages/Layout/components/Article";
+import Publish from "../pages/Layout/components/Publish";
+
 const routes = [
   {
-    path: "/",
+    path: "*",
     element: <Layout />,
   },
 
@@ -13,8 +16,16 @@ const routes = [
     element: <Layout />,
     children: [
       {
-        path: "Dashboard",
+        path: "",
         element: <Dashboard />,
+      },
+      {
+        path: "article",
+        element: <Article />,
+      },
+      {
+        path: "publish",
+        element: <Publish />,
       },
     ],
   },
