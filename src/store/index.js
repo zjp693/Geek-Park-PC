@@ -2,6 +2,7 @@
 import { configureStore } from "@reduxjs/toolkit";
 // 导入 userReducer 函数, 用于配置 store 对象
 import userReducer from "./userSlice";
+import listReducer from "./listSlice";
 
 // 创建、配置、导出 store 对象
 export default configureStore({
@@ -10,5 +11,6 @@ export default configureStore({
   // reducer 选项用于替换原有的 combineReducers 方法, 用于合并应用中的多个 reducer 函数, 组成最终的 Store 对象
   reducer: {
     user: userReducer,
+    list: listReducer,
   },
 });
