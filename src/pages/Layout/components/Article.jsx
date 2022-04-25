@@ -12,17 +12,17 @@ import {
 import { Link } from "react-router-dom";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import { Table, Space, Tag, Image } from "antd";
-import defaultImg from "@/assets/error.png";
+import defaultImg from "@/assets/error.gif";
 import styles from "./style/Article.module.scss";
 import { useDispatch, useSelector } from "react-redux";
 import { loadList, Articles } from "@/store/listSlice";
 const Article = () => {
   const dispatch = useDispatch();
-  const [aa, setAa] = useState([]);
-  const { list, artlist } = useSelector((state) => state.list);
+  const { list, artlist, page, per_page, total_count } = useSelector(
+    (state) => state.list
+  );
   const res = artlist.results;
-  // console.log(aa);
-  console.log(res);
+  console.log(artlist);
   useEffect(() => {
     dispatch(loadList());
     dispatch(Articles());
@@ -55,7 +55,6 @@ const Article = () => {
       render: (status) => {
         // console.log("aa" + status);
         const info = statusLabel[status];
-        console.log(info);
         return <Tag color={info.color}>{info.text}</Tag>;
       },
     },
@@ -97,7 +96,28 @@ const Article = () => {
     { text: "审核通过", color: "green" },
     { text: "审核拒绝", color: "red" },
   ];
-
+  // 改变筛选条件查询
+  const onFinish = (values) => {
+    console.log(values);
+    const params = {};
+    params.status = values.status;
+    params.channel_id = values.channel_id;
+    if (values.dateArr) {
+      params.begin_pubdate = values.dateArr[0].format("YYYY-MM-DD HH:mm:ss");
+      params.end_pubdate = values.dateArr[1].format("YYYY-MM-DD HH:mm:ss");
+    } else {
+      params.begin_pubdate = undefined;
+      params.end_pubdate = undefined;
+    }
+    dispatch(Articles(params));
+  };
+  // 改变分页和size重新查询
+  const onPageChange = (page, pageSize) => {
+    const params = {};
+    params.page = page;
+    params.per_page = pageSize;
+    dispatch(Articles(params));
+  };
   return (
     <div className={styles.root}>
       <Card
@@ -113,7 +133,7 @@ const Article = () => {
         style={{ marginTop: 24 }}
       >
         {/* 表单 */}
-        <Form>
+        <Form onFinish={onFinish}>
           <Form.Item label="状态：" name="status">
             <Radio.Group>
               <Radio value={undefined}>全部</Radio>
@@ -136,7 +156,9 @@ const Article = () => {
             <DatePicker.RangePicker />
           </Form.Item>
           <Form.Item>
-            <Button type="primary">筛选</Button>
+            <Button type="primary" htmlType="submit">
+              筛选
+            </Button>
           </Form.Item>
         </Form>
       </Card>
@@ -146,7 +168,17 @@ const Article = () => {
         } 条结果：`}
         style={{ marginTop: 24 }}
       >
-        <Table columns={columns} dataSource={res}></Table>
+        <Table
+          columns={columns}
+          dataSource={res}
+          rowKey="id"
+          pagination={{
+            current: artlist.page,
+            pageSize: artlist.per_page,
+            total: artlist.total_count,
+            onChange: onPageChange,
+          }}
+        ></Table>
       </Card>
     </div>
   );

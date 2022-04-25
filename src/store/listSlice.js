@@ -18,11 +18,12 @@ export const loadList = createAsyncThunk("list/loadList", async (payload) => {
 export const Articles = createAsyncThunk(
   "list/articleList",
   async (payload) => {
+    console.log(payload);
     // 异步操作成功, 返回异步操作结果, 它将会被作为 fulfilled action 的 payload
     // 异步操作失败, 抛出异常, 它将会作为 rejected action 的 error
     try {
-      let { data } = await getArticles();
-      // console.log(data);
+      let { data } = await getArticles(payload);
+      console.log(data);
       return data;
     } catch (error) {
       console.log("请求失败");

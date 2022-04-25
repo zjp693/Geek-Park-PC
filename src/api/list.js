@@ -14,6 +14,7 @@ export function getSetChannels() {
  * @param {Object}
  * @returns
  */
-export function getArticles() {
-  return request("/mp/articles", "get");
+export function getArticles(params) {
+  console.log(params);
+  return request("/mp/articles", "get", params);
 }
