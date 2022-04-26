@@ -11,7 +11,7 @@ import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { getUserInfo } from "@/api/user";
 import { useEffect, useState } from "react";
 
-const { Header, Sider } = Layout;
+const { Header, Sider, Content } = Layout;
 
 const GeekLayout = () => {
   // 用户名
@@ -26,7 +26,7 @@ const GeekLayout = () => {
   // 获取用户个人资料
   const handleGetUserInfo = async () => {
     const result = await getUserInfo();
-    console.log(result.data.name);
+    // console.log(result.data.name);
     setUserName(result.data.name);
   };
   // 退出
@@ -72,7 +72,10 @@ const GeekLayout = () => {
             </Popconfirm>
           </div>
         </Header>
-        <Outlet />
+        <Content>
+          <Outlet />
+        </Content>
+
         {/* <Dashboard />
         <Article />
         <Publish /> */}

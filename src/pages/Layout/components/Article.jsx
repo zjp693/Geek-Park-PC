@@ -8,16 +8,26 @@ import {
   Radio,
   Select,
   DatePicker,
+  Modal,
+  message,
+  Upload,
 } from "antd";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import { Table, Space, Tag, Image } from "antd";
 import defaultImg from "@/assets/error.gif";
+
 import styles from "./style/Article.module.scss";
+import Channel from "./Channel";
 import { useDispatch, useSelector } from "react-redux";
 import { loadList, Articles } from "@/store/listSlice";
+import { delArticles } from "@/api/list";
+const { Option } = Select;
 const Article = () => {
   const dispatch = useDispatch();
+  let navigate = useNavigate();
+  // let [showMsg, setShowMsg] = useState();
+  let showMsg = useRef("");
   const { list, artlist, page, per_page, total_count } = useSelector(
     (state) => state.list
   );
@@ -81,10 +91,18 @@ const Article = () => {
     {
       title: "操作",
       key: "action",
-      render: () => (
+      render: (record) => (
         <Space size="middle">
-          <Button type="link" icon={<EditOutlined />} />
-          <Button type="link" icon={<DeleteOutlined />} />
+          <Button
+            type="link"
+            onClick={() => editArticleFn(record.id)}
+            icon={<EditOutlined />}
+          />
+          <Button
+            type="link"
+            onClick={() => delArticleFn(record.id)}
+            icon={<DeleteOutlined />}
+          />
         </Space>
       ),
     },
@@ -98,6 +116,7 @@ const Article = () => {
   ];
   // 改变筛选条件查询
   const onFinish = (values) => {
+    // console.log(this.props.form.getFieldsValue());
     params.current.status = values.status;
     params.current.channel_id = values.channel_id;
     console.log(values);
@@ -130,6 +149,27 @@ const Article = () => {
     begin_pubdate: undefined,
     end_pubdate: undefined,
   });
+  // 删除
+  const delArticleFn = (id) => {
+    Modal.confirm({
+      title: "您是否确认删除该文章？",
+      cancelText: "取消",
+      okText: "确认",
+      onOk: () => {
+        delArticles(id).then(() => {
+          message.success("删除成功");
+          dispatch(Articles(params.current));
+        });
+      },
+    });
+  };
+  // 编辑
+  const editArticleFn = (id) => {
+    navigate(`/home/publish/${id}`);
+  };
+  const getDatas = (msg) => {
+    console.log(msg);
+  };
   return (
     <div className={styles.root}>
       <Card
@@ -156,11 +196,11 @@ const Article = () => {
             </Radio.Group>
           </Form.Item>
           <Form.Item label="频道：" name="channel_id">
-            <Select style={{ width: 288 }} placeholder="请选择文章开始频道">
+            <Select placeholder="请选择文章频道" style={{ width: 290 }}>
               {list.map((item) => (
-                <Select.Option key={item.id} value={item.id}>
+                <Option key={item.id} value={item.id}>
                   {item.name}
-                </Select.Option>
+                </Option>
               ))}
             </Select>
           </Form.Item>

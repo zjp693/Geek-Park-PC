@@ -1,5 +1,5 @@
 // createSlice: 用于创建状态切片
-import { getSetChannels, getArticles } from "@/api/list";
+import { getSetChannels, getArticles, delArticles } from "@/api/list";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
 // 频道
@@ -14,9 +14,9 @@ export const loadList = createAsyncThunk("list/loadList", async (payload) => {
     console.log("请求失败");
   }
 });
-// 文章
+//获取 文章
 export const Articles = createAsyncThunk(
-  "list/articleList",
+  "list/delarticleList",
   async (payload) => {
     // 异步操作成功, 返回异步操作结果, 它将会被作为 fulfilled action 的 payload
     // 异步操作失败, 抛出异常, 它将会作为 rejected action 的 error
@@ -28,7 +28,21 @@ export const Articles = createAsyncThunk(
     }
   }
 );
-
+//删除
+// export const halderDelArticles = createAsyncThunk(
+//   "list/articleList",
+//   async (payload) => {
+//     // 异步操作成功, 返回异步操作结果, 它将会被作为 fulfilled action 的 payload
+//     // 异步操作失败, 抛出异常, 它将会作为 rejected action 的 error
+//     try {
+//       let { data } = await delArticles(payload);
+//       console.log(data);
+//       return data;
+//     } catch (error) {
+//       console.log("请求失败");
+//     }
+//   }
+// );
 // actions: 对象类型, 用于存储 action creator 函数, 函数名字和 reducers 配置选项中 reducer 函数的名字相对应
 const { actions, reducer: userReducer } = createSlice({
   // createSlice 方法将会返回 action creator 函数, action creator 函数将要返回 action 对象

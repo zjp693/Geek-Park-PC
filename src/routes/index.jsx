@@ -6,13 +6,13 @@ import Article from "../pages/Layout/components/Article";
 import Publish from "../pages/Layout/components/Publish";
 
 const routes = [
-  {
-    path: "*",
-    element: <Layout />,
-  },
+  // {
+  //   path: "*",
+  //  <Navigate to="'/>
+  // },
 
   {
-    path: "/home",
+    path: `/home/*`,
     element: <Layout />,
     children: [
       {
@@ -20,11 +20,11 @@ const routes = [
         element: <Dashboard />,
       },
       {
-        path: "article",
+        path: `article`,
         element: <Article />,
       },
       {
-        path: "publish",
+        path: "publish/*",
         element: <Publish />,
       },
     ],
