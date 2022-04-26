@@ -32,6 +32,23 @@ export function delArticles(target) {
  * @returns
  */
 export function addArticles(data, draft = false) {
-  console.log(data);
   return request(`mp/articles?draft=${false}`, "post", data);
+}
+
+/**编辑文章
+ *
+ * @param {Object}
+ * @returns
+ */
+export function editArticle(data, draft = false) {
+  return request(`mp/articles/${data.id}?draft=${draft}`, "put", data);
+}
+
+/**文章数据回显
+ *
+ * @param {Object}
+ * @returns
+ */
+export function echoArticles(id) {
+  return request(`mp/articles/${id}`, "get");
 }

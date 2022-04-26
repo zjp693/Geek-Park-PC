@@ -165,7 +165,7 @@ const Article = () => {
   };
   // 编辑
   const editArticleFn = (id) => {
-    navigate(`/home/publish/${id}`);
+    navigate(`/home/publish?id=${id}`);
   };
   const getDatas = (msg) => {
     console.log(msg);

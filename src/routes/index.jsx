@@ -12,7 +12,7 @@ const routes = [
   // },
 
   {
-    path: `/home/*`,
+    path: `/home`,
     element: <Layout />,
     children: [
       {
@@ -24,7 +24,7 @@ const routes = [
         element: <Article />,
       },
       {
-        path: "publish/*",
+        path: "publish",
         element: <Publish />,
       },
     ],

@@ -11,7 +11,7 @@ import {
   Upload,
   message,
 } from "antd";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 
 import Editor from "md-editor-rt";
@@ -19,7 +19,7 @@ import "md-editor-rt/lib/style.css";
 import styles from "./style/Publish.modul.sass";
 import { PlusOutlined } from "@ant-design/icons";
 import { loadList } from "@/store/listSlice";
-import { addArticles } from "@/api/list";
+import { addArticles, echoArticles, editArticle } from "@/api/list";
 const { Option } = Select;
 
 const Publish = () => {
@@ -54,18 +54,52 @@ const Publish = () => {
       ...values,
       cover: {
         type,
+        images: fileList.map((item) => {
+          return item?.response?.data?.url || item.url;
+        }),
         // 后台需要[string]类型
         images: fileList.map((item) => item.response.data.url),
       },
     };
+    if (id) {
+      // 编辑
+      data.id = id;
+      await editArticle(data);
+    } else {
+    }
     addArticles(data).then((res) => {
       if (res.message == "OK") {
-        console.log(111111);
         message.success("添加成功");
         navigate("/home/article");
       }
     });
   };
+  // // 编辑自动填充
+  const [searchParams] = useSearchParams();
+  const id = searchParams.get("id");
+
+  const [form] = Form.useForm();
+  // 数据回显
+  const setFormData = async () => {
+    console.log(id);
+    if (id) {
+      const data = await echoArticles(id);
+      console.log(data);
+      const { title, cover, content, channel_id } = data.data;
+      console.log(title, cover, channel_id);
+      form.setFieldsValue({ title, channel_id });
+      setText(content);
+      setType(cover.type);
+      setFileList(cover.images.map((item) => ({ url: item })));
+    } else {
+      setType(1);
+      setFileList([]);
+      form.resetFields();
+    }
+  };
+  useEffect(() => {
+    setFormData();
+  }, [searchParams]);
   return (
     <div className={styles.root}>
       <Card
@@ -81,7 +115,7 @@ const Publish = () => {
           </Breadcrumb>
         }
       >
-        <Form onFinish={onFinish} labelCol={{ span: 4 }}>
+        <Form onFinish={onFinish} labelCol={{ span: 4 }} form={form}>
           <Form.Item
             label="文章标题："
             name="title"
