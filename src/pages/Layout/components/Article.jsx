@@ -18,7 +18,6 @@ import { Table, Space, Tag, Image } from "antd";
 import defaultImg from "@/assets/error.gif";
 
 import styles from "./style/Article.module.scss";
-import Channel from "./Channel";
 import { useDispatch, useSelector } from "react-redux";
 import { loadList, Articles } from "@/store/listSlice";
 import { delArticles } from "@/api/list";
@@ -27,7 +26,6 @@ const Article = () => {
   const dispatch = useDispatch();
   let navigate = useNavigate();
   // let [showMsg, setShowMsg] = useState();
-  let showMsg = useRef("");
   const { list, artlist, page, per_page, total_count } = useSelector(
     (state) => state.list
   );
@@ -167,9 +165,7 @@ const Article = () => {
   const editArticleFn = (id) => {
     navigate(`/home/publish?id=${id}`);
   };
-  const getDatas = (msg) => {
-    console.log(msg);
-  };
+
   return (
     <div className={styles.root}>
       <Card

@@ -19,7 +19,12 @@ import "md-editor-rt/lib/style.css";
 import styles from "./style/Publish.modul.sass";
 import { PlusOutlined } from "@ant-design/icons";
 import { loadList } from "@/store/listSlice";
-import { addArticles, echoArticles, editArticle } from "@/api/list";
+import {
+  addArticles,
+  echoArticles,
+  editArticle,
+  getArticles,
+} from "@/api/list";
 const { Option } = Select;
 
 const Publish = () => {
@@ -31,9 +36,9 @@ const Publish = () => {
     dispatch(loadList());
   }, []);
   // 富文本内容
-  const [text, setText] = useState("");
+  const [content, setContent] = useState("");
   // 封面类型渲染和切换
-  const [type, setType] = useState(1);
+  const [type, setType] = useState("1");
   const onTypeChange = (e) => {
     setType(e.target.value);
     setFileList([]);
@@ -43,9 +48,9 @@ const Publish = () => {
   const onUploadChange = ({ fileList }) => {
     setFileList(fileList);
   };
-  // 发表文章
-  const onFinish = async (values) => {
-    console.log(values);
+  // 发表/编辑文章
+  const onFinish = async (values, draft = false) => {
+    // console.log(values);
     if (type !== fileList.length) {
       return message.warning("请按照选择的封面类型上传图片");
     }
@@ -58,37 +63,45 @@ const Publish = () => {
           return item?.response?.data?.url || item.url;
         }),
         // 后台需要[string]类型
-        images: fileList.map((item) => item.response.data.url),
+        // images: fileList.map((item) => item.url),
+        // images: fileList.map((item) => console.log(item)),
       },
+      content: content,
     };
+    // console.log(data);
+    // console.log(id);
     if (id) {
       // 编辑
       data.id = id;
-      await editArticle(data);
+      console.log(data);
+      await editArticle(data, draft).then((res) => {
+        // if (res.message == "OK") {
+        //   message.success("编辑文章成功");
+        // }
+      });
     } else {
+      addArticles(data, draft).then((res) => {
+        // if (res.message == "OK") {
+        //   message.success("添加文章成功");
+        // }
+      });
     }
-    addArticles(data).then((res) => {
-      if (res.message == "OK") {
-        message.success("添加成功");
-        navigate("/home/article");
-      }
-    });
+    message.success("保存成功");
+    navigate("/home/article");
+    getArticles();
   };
   // // 编辑自动填充
   const [searchParams] = useSearchParams();
   const id = searchParams.get("id");
-
   const [form] = Form.useForm();
   // 数据回显
   const setFormData = async () => {
-    console.log(id);
     if (id) {
       const data = await echoArticles(id);
-      console.log(data);
       const { title, cover, content, channel_id } = data.data;
-      console.log(title, cover, channel_id);
+
       form.setFieldsValue({ title, channel_id });
-      setText(content);
+      setContent(content);
       setType(cover.type);
       setFileList(cover.images.map((item) => ({ url: item })));
     } else {
@@ -100,6 +113,19 @@ const Publish = () => {
   useEffect(() => {
     setFormData();
   }, [searchParams]);
+  // 存入草稿
+  const saveDarft = async () => {
+    try {
+      const values = await form.validateFields();
+      onFinish(values, true);
+    } catch (e) {
+      console.log("存入失败");
+    }
+  };
+  // 富文本
+  const handleChangeContent = (value) => {
+    setContent(value);
+  };
   return (
     <div className={styles.root}>
       <Card
@@ -111,7 +137,7 @@ const Publish = () => {
             <Breadcrumb.Item>
               <Link to="/article">内容管理</Link>
             </Breadcrumb.Item>
-            <Breadcrumb.Item>发布文章</Breadcrumb.Item>
+            <Breadcrumb.Item>{id ? "修改文章" : "发布文章"}</Breadcrumb.Item>
           </Breadcrumb>
         }
       >
@@ -126,7 +152,7 @@ const Publish = () => {
           <Form.Item
             label="所属频道："
             name="channel_id"
-            rules={[{ required: false, message: "请选择所属频道" }]}
+            rules={[{ required: true, message: "请选择所属频道" }]}
           >
             <Select placeholder="请选择文章频道" style={{ width: 400 }}>
               {list.map((item) => (
@@ -169,23 +195,22 @@ const Publish = () => {
           <Form.Item
             label="文章内容："
             name="content"
-            initialValue=""
-            rules={[{ required: true, message: "请输入文章内容" }]}
+            // initialValue=""
             wrapperCol={{ span: 16 }}
           >
             <Editor
+              rules={[{ required: true, message: "请输入文章内容" }]}
               placeholder="请输入文章内容"
-              modelValue={text}
-              onChange={(modelValue) => {
-                setText(modelValue);
-              }}
+              modelValue={content}
+              onChange={handleChangeContent}
             />
           </Form.Item>
           <Form.Item wrapperCol={{ offset: 4 }}>
             <Space>
               <Button type="primary" htmlType="submit">
-                发表文章
+                {id ? "修改文章" : "发布文章"}
               </Button>
+              <Button onClick={saveDarft}>存入草稿</Button>
             </Space>
           </Form.Item>
         </Form>

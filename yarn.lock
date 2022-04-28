@@ -1498,13 +1498,22 @@ react-refresh@^0.12.0:
   resolved "https://registry.npmmirror.com/react-refresh/-/react-refresh-0.12.0.tgz"
   integrity sha512-suLIhrU2IHKL5JEKR/fAwJv7bbeq4kJ+pJopf77jHwuR+HmJS/HbrPIGsTBUVfw7tXPOmYv7UJ7PCaN49e8x4A==
 
-react-router-dom@^6.3.0:
+react-router-dom@^6.2.1, react-router-dom@^6.3.0:
   version "6.3.0"
   resolved "https://registry.npmmirror.com/react-router-dom/-/react-router-dom-6.3.0.tgz"
   integrity sha512-uaJj7LKytRxZNQV8+RbzJWnJ8K2nPsOOEuX7aQstlMZKQT0164C+X2w6bnkqU3sjtLvpd5ojrezAyfZ1+0sStw==
   dependencies:
     history "^5.2.0"
     react-router "6.3.0"
+
+react-router-waiter@^1.1.6:
+  version "1.1.6"
+  resolved "https://registry.npmmirror.com/react-router-waiter/-/react-router-waiter-1.1.6.tgz#5caac8b428ebec0d61082abce5a262006aff24e6"
+  integrity sha512-ShR6sVz4w02uCLGWfmfxG/GlCOE1xKugcrTso/w+T9qefcv+8rE6pBveuxlmgQDcTkrGXVUHcPDo+7zKA6FCwQ==
+  dependencies:
+    react "^17.0.2"
+    react-dom "^17.0.2"
+    react-router-dom "^6.2.1"
 
 react-router@6.3.0:
   version "6.3.0"

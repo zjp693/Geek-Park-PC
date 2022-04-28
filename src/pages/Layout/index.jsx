@@ -16,14 +16,26 @@ const { Header, Sider, Content } = Layout;
 const GeekLayout = () => {
   // 用户名
   const [userName, setUserName] = useState("");
+  const [current, setCurrent] = useState("1");
   const location = useLocation();
   const navigate = useNavigate();
   // 激活菜单的key
-  let defaultKey = location.pathname;
-  if (defaultKey.startsWith("/home")) {
-    defaultKey = "/home";
+  const onClick = (e) => {
+    console.log(location.pathname);
+    setCurrent(e.key);
+  };
+  if (location.pathname == "/home/article") {
+    setTimeout(() => {
+      setCurrent("2");
+    }, 0);
   }
-  // 获取用户个人资料
+  if (location.pathname == "/home/publish") {
+    setTimeout(() => {
+      setCurrent("3");
+    }, 0);
+  }
+
+  // // 获取用户个人资料
   const handleGetUserInfo = async () => {
     const result = await getUserInfo();
     // console.log(result.data.name);
@@ -41,7 +53,12 @@ const GeekLayout = () => {
     <Layout className="geek-layout">
       <Sider width={148}>
         <div className="logo">GEEK</div>
-        <Menu defaultSelectedKeys={["1"]} mode="inline" theme="dark">
+        <Menu
+          selectedKeys={[current]}
+          onClick={onClick}
+          mode="inline"
+          theme="dark"
+        >
           <Menu.Item icon={<PieChartOutlined />} key="1">
             <Link to="/home">数据面板</Link>
           </Menu.Item>

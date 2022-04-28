@@ -15,7 +15,6 @@ export function getSetChannels() {
  * @returns
  */
 export function getArticles(params) {
-  console.log(params);
   return request("/mp/articles", "get", params);
 }
 /**删除文章

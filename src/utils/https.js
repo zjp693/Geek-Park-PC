@@ -17,7 +17,7 @@ const onRejected = (error) => Promise.reject(error);
 _axios.interceptors.request.use((config) => {
   const passUrl = ["/authorizations"];
   if (passUrl.includes(config.url)) return config;
-  const token = localStorage.getItem("@#@Token");
+  const token = localStorage.getItem("Token");
   // console.log(token);
   // 判断受否携带了 Token
   if (token) {

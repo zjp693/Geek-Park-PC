@@ -15,7 +15,7 @@ export const userLogin = createAsyncThunk("user/userLogin", async (payload) => {
   try {
     let { data } = await login(payload);
     // console.log(data);
-    localStorage.setItem("@#@Token", data.token);
+    localStorage.setItem("Token", data.token);
     return data.token;
   } catch (error) {
     console.log("请求失败");
